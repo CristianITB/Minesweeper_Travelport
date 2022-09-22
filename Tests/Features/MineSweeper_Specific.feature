@@ -175,3 +175,8 @@ When the user clicks on it
 Then the cell should be discovered
 And the cell should be disabled
 
+Scenario: Game start with right click
+Given the game hasn't started (need to define it better)
+When the user right clicks on any cell
+Then the cell should be marked as suspected cell  
+And the timeCounter should start increasing
