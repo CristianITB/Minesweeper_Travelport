@@ -1,9 +1,14 @@
 Feature: Minesweeper
 Here are some definitions and aclarations about the syntax that will be used:
 
+For the mock data:
 "(1, 2)" means row 1 column 2, understanding that there's no row 0 nor column 0
 "x" stands for cell with a mine
-"o" stands for a covered cell
+"o" stands for an empty cell
+
+For the board display:
+"#" stands for a covered cell
+"*" stands for a cell with a mine
 "0" stands for an empty cell
 "1" stands for a cell with 1 adjacent mine
 "2" stands for a cell with 2 adjacent mines
@@ -13,13 +18,13 @@ Here are some definitions and aclarations about the syntax that will be used:
 "6" stands for a cell with 6 adjacent mines
 "7" stands for a cell with 7 adjacent mines
 "8" stands for a cell with 8 adjacent mines
+"!" stands for a covered cell with a mine tag
 
-"Suspected cell" stands for a cell that is tagged as "!" meaning there's a potential mine on it,
-whereas "questionable cell" stands for a cell tagged as "?" meaning it isn't exactly known the value of the cell.
+"Suspected cell" stands for a cell that is tagged as "!" meaning there's a potential mine on it.
 
 Also, to load the mock data, it'll be used the following syntax:
 "ooo-oxo-ooo" stands for a 3x3 board, where the "-" defines when a new row does start.
-So "xo" would define a 1 row and 2 columns board, and "xoo-ooo" a board with 2 rows and 3 columns. 
+So "ox" would define a 1 row and 2 columns board, and "xoo-ooo" a board with 2 rows and 3 columns. 
 
 Background:
 Given a user opens the app
@@ -34,18 +39,22 @@ When the user discovers the cell "(1, 2)"
 Then the cell "(1, 2)" should be disabled
 
 Scenario: Discovering a cell: Cell with a mine -> Game over
-Given the user loads the following mock data: "xo"
-When the user discovers the cell "(1, 1)"
-Then the cell "(1, 1)" should show a mine
+Given the user loads the following mock data: "ox"
+When the user discovers the cell "(1, 2)"
+Then the cell "(1, 2)" should show a mine
 And the game should be over
 
-Scenario: Game over: Board status
+Scenario: Game over: Discovering all mines
 Given the user loads the following mock data: "xox-ooo-oxo"
 When the user discovers the cell "(1, 1)"
-Then the game is over
-And the following cells: "(1, 3)", "(3, 2)" should be discovered
-And the cells "(1, 3)", "(3, 2)" should show a mine
-And all the cells should be disabled
+Then the following cells: "(1, 1)", "(1, 3)", "(3, 2)" should be discovered
+And the cells "(1, 1)", "(1, 3)", "(3, 2)" should show a mine
+And the board display should show the following value: "*#*-###-#*#"
+
+Scenario: Game over: Disabling all the board
+Given the user loads the following mock data: "ox"
+When the user discovers the cell "(1, 2)"
+Then all the board cells should be disabled
 
 Scenario Outline: Discovering a cell: Cell without mine, but with adjacent mined cells -> Should show the number of adjacent mines
 Given the user loads the following mock data: "<mockData>"
@@ -64,45 +73,57 @@ Examples:
 | xxx-xox-xxx |     8     |
 
 
-Scenario: Win the game
-Given the user loads the following mock data: "ooo-xox-ooo"
-When the user discovers the cells "(1, 1)", "(1, 2)", "(1, 3)", "(2, 2)", "(3, 1)", "(3, 2)", "(3, 3)"
-Then the user has won the game
+Scenario: Discovering all the non-mined cells: Win the game
+Given the user loads the following mock data: "ox-xx"
+When the user discovers the cell "(1, 1)"
+Then the user should win the game
 
-Scenario: Wining the game: board status
-When the user wins the game
-Then all the cells should be disabled 
+Scenario: Wining the game: Disabling all the board
+Given the user loads the following mock data: "ox"
+When the user discovers the cell "(1, 1)"
+Then all the board cells should be disabled
 
-Scenario: Discovering a cell: Empty cell
-Given there's an empty cell
-When the user clicks on it
-Then the cell should be discovered
-And the cell should be disabled
-And also all the adjacent cells that are also empty should be discovered and disabled
-And also all the cells that sourround all those empty cells should be discovered and disabled
+Scenario: Discovering a cell: Empty cell -> All the adjacent cells should be discovered 
+Given the user loads the followig mock data: "xooox"
+When the user discovers the cell "(1, 3)"
+Then the board display should show the following value: "#101#"
 
 Scenario: Discovering a cell: Empty cell -> Expand the discovering to other empty cells
 Given the user loads the following mock data: "oooo-oooo-oxoo-oooo"
 When the user discovers the cell "(1, 1)"
-Then all the following cells should be discovered: "(1, 2)", "(1, 3)", "(1, 4)", "(2, 1)", "(2, 2)", "(2, 3)" "(2, 4)", "(3, 3)", "(3, 4)", "(4, 3)", "(4, 4)"
-And the cells "(2, 1)", "(2, 2)", "(2, 3)", "(3, 4)", "(4, 3)" should show the value 1
-And the cells "(1, 2)", "(1, 3)", "(1, 4)", "(3, 4)", "(4, 4)" should be empty
+Then the board display should show the following value: "0000-1110-##10-##10"
 
-oooo
-111o
-1x1o
-111o
+Scenario: Discovering an adjacent cell when a cell has been discovered by another adjacent empty cell
+Given the user loads the following mock data: "ooox"
+When the user discovers the cell "(1, 1)"
+Then the cell "(1, 2)" should be discovered
+And the cell "(1, 3)" should be discovered
+And the board disply should show the following value: "001#"
 
-"-------------------> Mouse scenarios"
-Scenario: Restart button
-When the user clicks the restart button
-Then the display should show all the cells covered
-And the 10 mines should be replaced 
 
-Scenario: Click on a discovered/disabled cell
-When the user clicks on a discovered cell
-Then nothing should happen (need to define it better)
+"-------------------> Tagging scenarios"
 
-Scenario: Right click on a discovered/disabled cell
-When the user right clicks on a discovered cell
-Then nothing should happen (need to define it better)
+Scenario: Tagging a cell: if the user believes there's a mine in a cell, it can be tagged as suspected
+Given the user loads the following mock data: "ox"
+When the user tags the cell "(1, 2)" as suspected
+Then the board display should show the following value: "#!"
+
+Scenario: Untag a suspected cell --------------------> if we follow the example of http://birrell.org/andrew/minesweeper/ this scenario is impossible
+Given the user loads the following mock data: "ox"
+And the user tags de cell "(1, 2)" as suspected
+And the board display shows the following value: "#!"
+When the user untags the cell "(1, 2)"
+Then the board display should show the following value: "##"
+
+Scenario: Game over with cells tagged as suspected: Discover all the mines except the ones tagged as suspected
+Given the user loads the following mock data: "oxxox"
+And the user tags the cell "(1, 2)" as suspected
+And the board display shows the following value: "#!###"
+When the user discovers the cell "(1, 3)"
+Then the board display should show the followin value: "#!*#*"
+
+Scenario: Wining the game: Tag all the remaining mines as suspected
+Given the user loads the following mock data: "oxxox"
+And the user tags the cell "(1, 2)" as suspected
+When the user discovers the following cells: "(1, 1)", "(1, 4)"
+Then the board display should be: "1!!2!"
