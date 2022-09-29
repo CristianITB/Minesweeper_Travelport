@@ -134,9 +134,23 @@ When a few seconds have passed
 And the user discovers the cell "(1, 1)"
 Then the time display should stop increasing
 
-Scenario: Restart button ------------------> Primero describes un mockdata y unos pasos aletorios y dp describir lo qe verias: empty timer, 10 mines, all enabled...
+Scenario: Restart button
+Given the user loads the following mock data: 
+"""
+ooo
+ooo
+ooo
+***
+"""
+And the user discovers the cell "(3, 1)"
+And the user tags de cell "(4, 1)" as questionable
+And the user tags the cell "(4, 2)" as suspected
+And the user discovers the cell "(1, 1)"
 When the user restarts the game
-Then the board display should be the default screen
+Then all the cells should be covered
+And all the cells should be enabled
+And the time display should be empty
+And the untagged mines counter should be 3
 
 @mouse
 Scenario: Change tag from suspected to questionable with the mouse
