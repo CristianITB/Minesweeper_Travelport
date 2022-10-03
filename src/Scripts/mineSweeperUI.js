@@ -1,36 +1,54 @@
-import { createBoard, markTile, TILE_STATUSES, discoverCell, checkWin, checkLose } from "./mineSweeperLogic.js";
+import { createBoard, markCell, Cell_Status, discoverCell, checkWin, checkLose } from "./mineSweeperLogic.js";
 
-const board_size = 8
-const number_of_mines = 10
+var numberOfRows = 8
+var numberOfColumns = 8
+var number_of_mines = 10
 
-const board = (createBoard(board_size, number_of_mines))
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const mockData = urlParams.get('mockData')
+
+
+function splitMockData(mockData) {
+    return mockData.split('-');
+}
+
+if(mockData != null){
+    const splittedMockData = splitMockData(mockData)
+    numberOfRows = splittedMockData.length
+    numberOfColumns = splittedMockData[0].length
+    number_of_mines = 2
+}
+
+const board = (createBoard(numberOfRows, numberOfColumns, number_of_mines))
 const boardElement = document.querySelector(".board")
 const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
 const messageText = document.querySelector(".subtext")
 
 //Setting up the board
 board.forEach(row => {
-    row.forEach(tile => {
-        boardElement.append(tile.element)
-        tile.element.addEventListener("click", () =>{
-            discoverCell(board, tile)
+    row.forEach(cell => {
+        boardElement.append(cell.element)
+        cell.element.addEventListener("click", () =>{
+            discoverCell(board, cell)
             checkEndGame()
         })
-        tile.element.addEventListener("contextmenu", e =>{
+        cell.element.addEventListener("contextmenu", e =>{
             e.preventDefault()
-            markTile(tile)
+            markCell(cell)
             listMinesLeft()
         })
     })
 })
-boardElement.style.setProperty("--size", board_size)
+boardElement.style.setProperty("--rowsSize", numberOfRows)
+boardElement.style.setProperty("--columnsSize", numberOfColumns)
 untaggedMinesCounter.textContent = number_of_mines
 
 function listMinesLeft(){
     const taggedCellsCount = board.reduce((count, row) => {
-        return count + row.filter(tile => tile.status === TILE_STATUSES.MARKED).length
+        return count + row.filter(cell => cell.status === Cell_Status.MARKED).length
     }, 0) //it sets the count at 0
-    untaggedMinesCounter.textContent =  number_of_mines - taggedCellsCount
+    untaggedMinesCounter.textContent = number_of_mines - taggedCellsCount
 }
 
 function checkEndGame(){
@@ -49,12 +67,12 @@ function checkEndGame(){
     if(lose){
         messageText.textContent = "You lost the game like you lose everything in life loser."
         board.forEach(row => {
-            row.forEach(tile => {
-                if(tile.status === TILE_STATUSES.MARKED){
-                    markTile(tile)  //if the tile is marked, it marks it again so it loses the mark...is like a toggle function
+            row.forEach(cell => {
+                if(cell.status === Cell_Status.MARKED){
+                    markCell(cell)  //if the cell is marked, it marks it again so it loses the mark...is like a toggle function
                 }
-                if (tile.mine){
-                    discoverCell(board, tile)
+                if (cell.mine){
+                    discoverCell(board, cell)
                 }
             })
         })
@@ -66,3 +84,7 @@ function stopProp(e){
     e.stopImmediatePropagation()
 }
 
+const restartButton = document.querySelector(".restartButton")
+restartButton.addEventListener("click", () =>{
+    location.reload();
+})
