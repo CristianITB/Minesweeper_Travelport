@@ -6,21 +6,30 @@ export const Cell_Status = {
 }
 
 //Haure de canviar el board size per ser un array amb les variables x i y o algo aixi per quan faci servir mock data
-export function createBoard(numberOfRows, numberOfColumns, numberOfMines){
+export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData){
+    var minePositions = null
+    if(minePositionsMockData == null){
+        minePositions = getMinePositions(numberOfRows, numberOfColumns, numberOfMines) 
+    } else{
+        minePositions = minePositionsMockData
+    }
     
     const board = []
-    const minePoisitions = getMinePositions(numberOfRows, numberOfColumns, numberOfMines)
 
     for(let x = 0; x < numberOfRows; x++){
         const row = []
         for(let y = 0; y < numberOfColumns; y++){
             const element = document.createElement("div")
             element.dataset.status = Cell_Status.HIDDEN
+            let xCorrected = x+1
+            let yCorrected = y+1
+            element.setAttribute("data-testid", "(" + xCorrected + ", " + yCorrected + ")")
+
             const cell = {
                 element,
                 x,
                 y,
-                mine: minePoisitions.some(positionMatch.bind(null, {x, y})),  //checks if the positoins in "minePositions" matches de x, y coord above. If they match, mine = true
+                mine: minePositions.some(positionMatch.bind(null, {x, y})),  //checks if the positoins in "minePositions" matches de x, y coord above. If they match, mine = true
                 get status(){
                     return this.element.dataset.status
                 },
@@ -82,7 +91,7 @@ export function discoverCell(board, cell){
 
     if(cell.mine){
         cell.status = Cell_Status.MINE
-        cell.disabled = true
+        cell.element.textContent = "mine" //aquesta linia sobra, es nomes pel test till i know com trobar el status 
         return
     }
 
@@ -91,11 +100,9 @@ export function discoverCell(board, cell){
     const mines = adjacentCells.filter(c => c.mine)
 
     if(mines.length === 0){
-        cell.disabled = true
         adjacentCells.forEach(discoverCell.bind(null, board))  //aqui ocurre la magia de destapar las empty
     } else{
-        cell.element.textContent = mines.length
-        cell.disabled = true
+        cell.element.textContent = mines.length;
     }
 }
 

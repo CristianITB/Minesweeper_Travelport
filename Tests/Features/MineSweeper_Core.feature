@@ -30,11 +30,12 @@ So "ox" would define a 1 row and 2 columns board, and "xoo-ooo" a board with 2 r
 Background:
 Given a user opens the app
 
-@current
+@manual
 Scenario: Default screen
 Then the display should show an 8x8 cells board
 And all the cells should be covered
 
+@manual
 Scenario: Discovering a cell: General behaviour (disabled)
 When the user discovers the cell "(1, 1)"
 Then the cell "(1, 1)" should be disabled

@@ -2,25 +2,47 @@ import { createBoard, markCell, Cell_Status, discoverCell, checkWin, checkLose }
 
 var numberOfRows = 8
 var numberOfColumns = 8
-var number_of_mines = 10
+var numberOfMines = 10
+
+/* ---------- Mock Data Management -----------*/
+var minePositionsMockData = null
 
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const mockData = urlParams.get('mockData')
 
 
-function splitMockData(mockData) {
-    return mockData.split('-');
-}
-
 if(mockData != null){
     const splittedMockData = splitMockData(mockData)
     numberOfRows = splittedMockData.length
     numberOfColumns = splittedMockData[0].length
-    number_of_mines = 2
+    minePositionsMockData = getMineMockDataPositions(splittedMockData)
+    numberOfMines = minePositionsMockData.length
 }
 
-const board = (createBoard(numberOfRows, numberOfColumns, number_of_mines))
+function splitMockData(mockData) {
+    return mockData.split('-');
+}
+    
+function getMineMockDataPositions(splittedMockData){
+    const minePositions = []
+    for(let i = 0; i < splittedMockData.length; i++){
+        for(let j = 0; j < splittedMockData[0].length; j++){            
+            if(splittedMockData[i][j] == "x"){
+                const position = {
+                    x: i,
+                    y: j
+                }
+                minePositions.push(position)
+            }  
+        }
+    }    
+    return minePositions    
+}
+/* ------------------------------------------ */
+    
+
+const board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
 const boardElement = document.querySelector(".board")
 const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
 const messageText = document.querySelector(".subtext")
@@ -42,13 +64,13 @@ board.forEach(row => {
 })
 boardElement.style.setProperty("--rowsSize", numberOfRows)
 boardElement.style.setProperty("--columnsSize", numberOfColumns)
-untaggedMinesCounter.textContent = number_of_mines
+untaggedMinesCounter.textContent = numberOfMines
 
 function listMinesLeft(){
     const taggedCellsCount = board.reduce((count, row) => {
         return count + row.filter(cell => cell.status === Cell_Status.MARKED).length
     }, 0) //it sets the count at 0
-    untaggedMinesCounter.textContent = number_of_mines - taggedCellsCount
+    untaggedMinesCounter.textContent = numberOfMines - taggedCellsCount
 }
 
 function checkEndGame(){
