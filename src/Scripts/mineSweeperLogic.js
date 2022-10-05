@@ -91,7 +91,6 @@ export function discoverCell(board, cell){
 
     if(cell.mine){
         cell.status = Cell_Status.MINE
-        cell.element.textContent = "mine" //aquesta linia sobra, es nomes pel test till i know com trobar el status 
         return
     }
 

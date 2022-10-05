@@ -40,25 +40,27 @@ Scenario: Discovering a cell: General behaviour (disabled)
 When the user discovers the cell "(1, 1)"
 Then the cell "(1, 1)" should be disabled
 
-@current
+@Notcurrent
 Scenario: Discovering a cell: Cell with a mine -> Game over
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 2)"
 Then the cell "(1, 2)" should show a mine
 And the game should be over
 
+@Notcurrent
 Scenario: Game over: Discovering all mines
 Given the user loads the following mock data: "oxx"
 When the user discovers the cell "(1, 2)"
-Then the cell "(1, 3)" should be discovered
-And the celll "(1, 3)" should show a mine
+Then the celll "(1, 3)" should show a mine
 And the board display should show the following value: "#**"
 
+@manual
 Scenario: Game over: Disabling all the board
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 2)"
 Then all the board cells should be disabled
 
+@Notcurrent
 Scenario Outline: Discovering a cell: Cell without mine, but with adjacent mined cells -> Should show the number of adjacent mines
 Given the user loads the following mock data: "<mockData>"
 When the user discovers the cell "(2, 2)"  
@@ -75,24 +77,26 @@ Examples:
 | xxx-xox-xox |     7     |
 | xxx-xox-xxx |     8     |
 
-
+@Notcurrent
 Scenario: Discovering all the non-mined cells: Win the game
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 1)"
 Then the user should win the game
 
+@manual
 Scenario: Wining the game: Disabling all the board
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 1)"
 Then all the board cells should be disabled
 
+@current
 Scenario: Discovering a cell: A cell without mine and without surrounding mines -> Empty cell
 Given the user loads the followig mock data:
 """
 ooo
 ooo
 ooo
-***
+xxx
 """
 When the user discovers the cell "(2, 2)"
 Then the cell "(2, 2)" is empty
@@ -151,4 +155,4 @@ Given the user loads the following mock data: "oxxox"
 And the user tags the cell "(1, 2)" as suspected
 When the user discovers the following cell: "(1, 1)"
 And the user discovers the following cell: "(1, 4)"
-Then the board display should be: "1!!2!"  
+Then the board display should show the following value: "1!!2!"  

@@ -21,7 +21,11 @@ if(mockData != null){
 }
 
 function splitMockData(mockData) {
-    return mockData.split('-');
+    if(mockData.includes("-")){
+        return mockData.split("-")
+    } else if(mockData.includes("\\n")){
+        return mockData.split("\\n")
+    }
 }
     
 function getMineMockDataPositions(splittedMockData){
@@ -83,10 +87,11 @@ function checkEndGame(){
     }
 
     if(win){
-        messageText.textContent = "You've won the game! Congratulations motherfucker"
+        messageText.textContent = "You've won the game! Congratulations motherfucker."
     }
 
     if(lose){
+        console.log(document.querySelector(".board").innerHTML)
         messageText.textContent = "You lost the game like you lose everything in life loser."
         board.forEach(row => {
             row.forEach(cell => {
