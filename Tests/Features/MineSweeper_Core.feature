@@ -47,7 +47,7 @@ When the user discovers the cell "(1, 2)"
 Then the cell "(1, 2)" should show a mine
 And the game should be over
 
-@Notcurrent
+@showBoardDisplay
 Scenario: Game over: Discovering all mines
 Given the user loads the following mock data: "oxx"
 When the user discovers the cell "(1, 2)"
@@ -89,7 +89,7 @@ Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 1)"
 Then all the board cells should be disabled
 
-@current
+@Notcurrent
 Scenario: Discovering a cell: A cell without mine and without surrounding mines -> Empty cell
 Given the user loads the followig mock data:
 """
@@ -99,8 +99,9 @@ ooo
 xxx
 """
 When the user discovers the cell "(2, 2)"
-Then the cell "(2, 2)" is empty
+Then the cell "(2, 2)" should be empty
 
+@showBoardDisplay
 Scenario: Discovering a cell: Empty cell -> All the adjacent cells should be discovered 
 Given the user loads the followig mock data: 
 """
@@ -118,6 +119,7 @@ Then the board display should show the following value:
 ###
 """
 
+@showBoardDisplay
 Scenario: When an empty is cell discovered by a neighbour -> Reveal the adjacent cells of the empty cell
 Given the user loads the following mock data:
 """
@@ -135,21 +137,25 @@ Then the board display should show the following value:
 ##10
 """
 
+@Notcurrent
 Scenario: Tagging a cell: if the user believes there's a mine in a cell, it can be tagged as suspected
 When the user tags the cell "(1, 1)" as suspected
 Then the cell "(1, 1)" should show the suspected tag
 
+@Notcurrent
 Scenario: Untag a suspected cell
-And the user tags de cell "(1, 1)" as suspected
+And the user tags the cell "(1, 1)" as suspected
 When the user untags the cell "(1, 1)"
 Then the cell "(1, 1)" shouldn't show the suspected tag
 
+@showBoardDisplay
 Scenario: Game over having cells tagged as suspected: Discover all the mines except the ones tagged as suspected
 Given the user loads the following mock data: "oxxox"
 And the user tags the cell "(1, 2)" as suspected
 When the user discovers the cell "(1, 3)"
 Then the board display should show the followin value: "#!*#*"
 
+@showBoardDisplay
 Scenario: Wining the game: Tag all the remaining mines as suspected
 Given the user loads the following mock data: "oxxox"
 And the user tags the cell "(1, 2)" as suspected

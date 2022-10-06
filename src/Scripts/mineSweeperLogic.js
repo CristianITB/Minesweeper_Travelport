@@ -2,7 +2,8 @@ export const Cell_Status = {
     HIDDEN: "hidden",
     MINE: "mine",
     NUMBER: "number",
-    MARKED: "marked"
+    TAGGED: "tagged",
+    EMPTY: "empty"      //"empty" wasn't really necessary, but was usefull for testing
 }
 
 //Haure de canviar el board size per ser un array amb les variables x i y o algo aixi per quan faci servir mock data
@@ -72,33 +73,37 @@ function randomNumber(size){
     return Math.floor(Math.random() * size)
 }
 
-
-export function markCell(cell){
-    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.MARKED){
+export function tagCell(cell){
+    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.TAGGED){
         return 
     }
-    if(cell.status === Cell_Status.MARKED){
+    if(cell.status === Cell_Status.TAGGED){
         cell.status = Cell_Status.HIDDEN
+        cell.element.textContent = ""
     } else{
-        cell.status = Cell_Status.MARKED
+        cell.status = Cell_Status.TAGGED
+        cell.element.textContent = "!"
     }
 }
 
 export function discoverCell(board, cell){
-    if(cell.status !== Cell_Status.HIDDEN){
+    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.TAGGED){
         return
     }
 
     if(cell.mine){
         cell.status = Cell_Status.MINE
+        cell.element.textContent = "*"
         return
     }
 
+    cell.element.textContent = ""
     cell.status = Cell_Status.NUMBER
     const adjacentCells = getAdjacentCells(board, cell)
-    const mines = adjacentCells.filter(c => c.mine)
+    const mines = adjacentCells.filter(adjacentCell => adjacentCell.mine)
 
     if(mines.length === 0){
+        cell.status = Cell_Status.EMPTY
         adjacentCells.forEach(discoverCell.bind(null, board))  //aqui ocurre la magia de destapar las empty
     } else{
         cell.element.textContent = mines.length;
@@ -122,8 +127,9 @@ function getAdjacentCells(board, {x, y}){
 export function checkWin(board){
     return board.every(row =>{
         return row.every(cell =>{
-            return (cell.status === Cell_Status.NUMBER || 
-                   (cell.mine && (cell.status === Cell_Status.HIDDEN || cell.status === Cell_Status.MARKED)))
+            return (cell.status === Cell_Status.NUMBER || cell.status === Cell_Status.EMPTY ||
+                   (cell.mine && (cell.status === Cell_Status.HIDDEN || cell.status === Cell_Status.TAGGED))
+                   )
         })
     })
 }
@@ -133,6 +139,17 @@ export function checkLose(board){
     return board.some(row =>{
         return row.some(cell =>{
             return cell.status === Cell_Status.MINE
+        })
+    })
+}
+
+export function tagAllMines(board){
+    board.forEach(row =>{
+        row.forEach(cell =>{
+            if(cell.mine){
+                cell.status = Cell_Status.TAGGED
+                cell.element.textContent = "!"
+            }
         })
     })
 }

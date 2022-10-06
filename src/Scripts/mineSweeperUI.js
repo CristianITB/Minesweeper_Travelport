@@ -1,4 +1,4 @@
-import { createBoard, markCell, Cell_Status, discoverCell, checkWin, checkLose } from "./mineSweeperLogic.js";
+import { createBoard, tagCell, Cell_Status, discoverCell, checkWin, checkLose, tagAllMines } from "./mineSweeperLogic.js";
 
 var numberOfRows = 8
 var numberOfColumns = 8
@@ -21,11 +21,7 @@ if(mockData != null){
 }
 
 function splitMockData(mockData) {
-    if(mockData.includes("-")){
-        return mockData.split("-")
-    } else if(mockData.includes("\\n")){
-        return mockData.split("\\n")
-    }
+    return mockData.split("-")
 }
     
 function getMineMockDataPositions(splittedMockData){
@@ -58,10 +54,11 @@ board.forEach(row => {
         cell.element.addEventListener("click", () =>{
             discoverCell(board, cell)
             checkEndGame()
+            listMinesLeft()
         })
         cell.element.addEventListener("contextmenu", e =>{
             e.preventDefault()
-            markCell(cell)
+            tagCell(cell)
             listMinesLeft()
         })
     })
@@ -72,7 +69,7 @@ untaggedMinesCounter.textContent = numberOfMines
 
 function listMinesLeft(){
     const taggedCellsCount = board.reduce((count, row) => {
-        return count + row.filter(cell => cell.status === Cell_Status.MARKED).length
+        return count + row.filter(cell => cell.status === Cell_Status.TAGGED).length
     }, 0) //it sets the count at 0
     untaggedMinesCounter.textContent = numberOfMines - taggedCellsCount
 }
@@ -87,18 +84,15 @@ function checkEndGame(){
     }
 
     if(win){
+        tagAllMines(board);
         messageText.textContent = "You've won the game! Congratulations motherfucker."
     }
 
     if(lose){
-        console.log(document.querySelector(".board").innerHTML)
         messageText.textContent = "You lost the game like you lose everything in life loser."
         board.forEach(row => {
             row.forEach(cell => {
-                if(cell.status === Cell_Status.MARKED){
-                    markCell(cell)  //if the cell is marked, it marks it again so it loses the mark...is like a toggle function
-                }
-                if (cell.mine){
+                if (cell.mine && cell.status !== Cell_Status.TAGGED){
                     discoverCell(board, cell)
                 }
             })

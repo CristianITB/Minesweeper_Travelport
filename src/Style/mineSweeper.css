@@ -55,8 +55,9 @@
     background-color: none;
   }
   
-  .board > [data-status="marked"] {
-    background-color: yellow;
+  .board > [data-status="tagged"] {
+    background-color: lightcoral;
+    color: black;
   }
 
   .restartButton{
