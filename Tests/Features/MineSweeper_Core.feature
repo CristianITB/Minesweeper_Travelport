@@ -33,7 +33,7 @@ Given a user opens the app
 @manual
 Scenario: Default screen
 Then the display should show an 8x8 cells board
-And all the cells should be covered
+Then all the cells should be covered
 
 @manual
 Scenario: Discovering a cell: General behaviour (disabled)
@@ -47,11 +47,11 @@ When the user discovers the cell "(1, 2)"
 Then the cell "(1, 2)" should show a mine
 And the game should be over
 
-@showBoardDisplay
+@showBoardDisplayGOOOOOOD
 Scenario: Game over: Discovering all mines
 Given the user loads the following mock data: "oxx"
 When the user discovers the cell "(1, 2)"
-Then the celll "(1, 3)" should show a mine
+Then the cell "(1, 3)" should show a mine
 And the board display should show the following value: "#**"
 
 @manual
@@ -101,7 +101,7 @@ xxx
 When the user discovers the cell "(2, 2)"
 Then the cell "(2, 2)" should be empty
 
-@showBoardDisplay
+@current
 Scenario: Discovering a cell: Empty cell -> All the adjacent cells should be discovered 
 Given the user loads the followig mock data: 
 """
@@ -110,7 +110,7 @@ ooo
 ooo
 ***
 """
-When the user discovers the cell "(2,2)"
+When the user discovers the cell "(2, 2)"
 Then the board display should show the following value: 
 """
 000

@@ -11,7 +11,7 @@ const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const mockData = urlParams.get('mockData')
 
-
+//Comprovar qe el mockData sea solo "o" y "x" ?
 if(mockData != null){
     const splittedMockData = splitMockData(mockData)
     numberOfRows = splittedMockData.length
@@ -46,6 +46,11 @@ const board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePos
 const boardElement = document.querySelector(".board")
 const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
 const messageText = document.querySelector(".subtext")
+
+const boardDiv = document.querySelector(".board")
+const count = boardDiv.childNodes
+console.log(count)
+console.log(count.length)
 
 //Setting up the board
 board.forEach(row => {
