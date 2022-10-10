@@ -21,6 +21,12 @@
     font-size: 1.5rem;
     margin-bottom: 10px;
   }
+
+  .timer {
+    color: #CCC;
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+  }
   
   .board {
     display: inline-grid;

@@ -34,22 +34,9 @@ So "ox" would define a 1 row and 2 columns board, and "xoo-ooo" a board with 2 r
 Background:
 Given a user opens the app
 
-Scenario Outline: Default screen values: Untagged mines counter
-Given the user loads the following mock data: "<mockData>"
-Then the untagged mines counter should be set at: "<untaggedMinesCounter>"
-
-Examples: 
-
-|    mockData    | unatggedMinesCounter |
-|    xoo-ooo     |          1           |
-|    xxx-ooo     |          3           |
-|    xxx-oox     |          4           |
-|  xxx-oxx-xxo   |          7           |
-|  xxx-oxx-xxx   |          8           |
-
-
+@current
 Scenario Outline: Default screen values: Time counter
-Then the time display should be empty
+Then the time display should be "⏳ 00:00:00"
 
 Scenario: Tagging a cell: if the user doesn't know the value of a cell, it can be tagged as questionable
 When the user tags the cell "(1, 1)" as questionable

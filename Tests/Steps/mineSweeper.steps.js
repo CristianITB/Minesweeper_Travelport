@@ -13,9 +13,8 @@ async function cellMark(cellPosition){
 	await page.click(`[data-testid="${cellPosition}"]`, { button: "right" })
 }
 
-//tengo qe tocar aqui abajo (l.35) pq ahora esta puesto como si solo hubiese una linea
 async function displayShowValue(displayValue){
-	console.log(displayValue + " display")
+	const splittedDisplayValue = displayValue.split("-")
 	var transcripted = []
 	for(let i = 0; i < displayValue.length; i++){
 		switch(displayValue[i]){
@@ -30,10 +29,11 @@ async function displayShowValue(displayValue){
 			case "5": transcripted.push("5"); break
 		}
 	}
-	console.log(transcripted + " transcr")
-	for(let j = 1; j <= transcripted.length; j++){
-		const cellStatus = await page.locator(`[data-testid="(1, ${j})"]`).getAttribute("data-status");
-		expect(cellStatus).toBe(transcripted[j-1])
+	for(let j = 1; j <= splittedDisplayValue; j++){
+		for(let k = 1; j <= transcripted.length; k++){
+			const cellStatus = await page.locator(`[data-testid="(${k}, ${j})"]`).getAttribute("data-status");
+			expect(cellStatus).toBe(transcripted[j-1])
+		}
 	}
 }
 
@@ -62,6 +62,11 @@ Then('all the cells should be covered', async () => {
 	}
 })
 
+Then('the cell {string} should be disabled', async (cellCoord) => {
+	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("disabled");
+	expect(cellStatus).toBe("true")
+})
+
 Given('the user loads the following mock data: {string}', async function (mockData){
 	await page.goto(url + "?mockData=" + mockData);
 });
@@ -79,6 +84,10 @@ Then('the board display should show the following value:', async (displayValue) 
 	await displayShowValue(displayValue.replaceAll("\n", "-"))
 })
 
+Then('the board display should show the following value: {string}', async (displayValue) => {
+	await displayShowValue(displayValue.replaceAll("\n", "-"))
+})
+
 Then('the game should be over', async () => {
 	const endGameMessage = await page.locator(".subtext").textContent();
 	expect(endGameMessage).toBe("You lost the game like you lose everything in life loser.")
@@ -90,6 +99,7 @@ Then('the cell {string} should be discovered', async (cellCoord) => {
 })
 
 Then('the cell {string} should show the following value: {string}', async(cellCoord, cellValue) => {
+	console.log("cell value " + cellValue)
 	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
 	expect(cellStatus).toBe(cellValue)
 })
@@ -99,7 +109,7 @@ Then('the user should win the game', async () => {
 	expect(endGameMessage).toBe("You've won the game! Congratulations motherfucker.")
 })
 
-Given('the user loads the followig mock data:', async (mockData) => {
+Given('the user loads the following mock data:', async (mockData) => {
 	await page.goto(url + "?mockData=" + mockData.replaceAll("\n", "-"));
 });
 
@@ -132,6 +142,15 @@ Then("the cell {string} shouldn't show the suspected tag", async (cellCoord) => 
 	expect(cellStatus).toBe("hidden")
 })
 
+Then('the untagged mines counter should be set at: {string}', async (untaggedMinesCounter) => {
+	const displayMineCounter = await page.locator(".subtext").textContent()
+	expect(displayMineCounter).toBe("💣 Mines left: " + untaggedMinesCounter)
+})
+
+
 
 /* ---- Specific feature below here ---- */
-
+Then('the time display should be {string}', async(timeCounter) => {
+	const timeDisplay = await page.locator(".timer").textContent()
+	expect(timeDisplay).toBe(timeCounter)
+})

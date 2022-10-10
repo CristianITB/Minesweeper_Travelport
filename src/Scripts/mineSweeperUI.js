@@ -4,6 +4,10 @@ var numberOfRows = 8
 var numberOfColumns = 8
 var numberOfMines = 10
 
+/* ---------- Timer ---------- */
+var seconds = 0;
+var interval = null;
+
 /* ---------- Mock Data Management -----------*/
 var minePositionsMockData = null
 
@@ -49,19 +53,23 @@ const messageText = document.querySelector(".subtext")
 
 const boardDiv = document.querySelector(".board")
 const count = boardDiv.childNodes
-console.log(count)
-console.log(count.length)
+//console.log(count)
+//console.log(count.length)
+//no aconsegueixo treure el nombre de child divs qe te el board, qe voldria saber-ho
+//per poder fer el test de default screen show a 8x8 board
 
 //Setting up the board
 board.forEach(row => {
     row.forEach(cell => {
         boardElement.append(cell.element)
         cell.element.addEventListener("click", () =>{
+            startTimer()
             discoverCell(board, cell)
             checkEndGame()
             listMinesLeft()
         })
         cell.element.addEventListener("contextmenu", e =>{
+            startTimer()
             e.preventDefault()
             tagCell(cell)
             listMinesLeft()
@@ -84,6 +92,7 @@ function checkEndGame(){
     const lose = checkLose(board)
 
     if(win || lose){
+        stopTimer();
         boardElement.addEventListener("click", stopProp, {capture: true}) //capture phase occurs before bubble phase, which is the one used in l.14
         boardElement.addEventListener("contextmenu", stopProp, {capture: true})
     }
@@ -99,6 +108,8 @@ function checkEndGame(){
             row.forEach(cell => {
                 if (cell.mine && cell.status !== Cell_Status.TAGGED){
                     discoverCell(board, cell)
+                } else{
+                    cell.element.setAttribute("disabled", true)
                 }
             })
         })
@@ -114,3 +125,35 @@ const restartButton = document.querySelector(".restartButton")
 restartButton.addEventListener("click", () =>{
     location.reload();
 })
+
+
+
+/* ------- Timer functions ------- */
+const timerDiv = document.querySelector('.timer');
+
+function timer(){
+	seconds++;
+
+    let hrs = Math.floor(seconds / 3600);
+	let mins = Math.floor((seconds - (hrs * 3600)) / 60);
+	let secs = seconds % 60;
+
+	if (secs < 10) secs = '0' + secs;
+	if (mins < 10) mins = "0" + mins;
+	if (hrs < 10) hrs = "0" + hrs;
+
+	timerDiv.innerText = `⏳ ${hrs}:${mins}:${secs}`;
+}
+
+function startTimer(){
+    if(interval == null){
+        interval = setInterval(timer, 1000);
+    } else{
+        return
+    }
+}
+
+function stopTimer(){
+	clearInterval(interval);
+	interval = null;
+}

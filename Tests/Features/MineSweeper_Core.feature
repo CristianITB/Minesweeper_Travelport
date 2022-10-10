@@ -35,19 +35,19 @@ Scenario: Default screen
 Then the display should show an 8x8 cells board
 Then all the cells should be covered
 
-@manual
+@testDone
 Scenario: Discovering a cell: General behaviour (disabled)
 When the user discovers the cell "(1, 1)"
 Then the cell "(1, 1)" should be disabled
 
-@Notcurrent
+@testDone
 Scenario: Discovering a cell: Cell with a mine -> Game over
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 2)"
 Then the cell "(1, 2)" should show a mine
 And the game should be over
 
-@showBoardDisplayGOOOOOOD
+@testDone
 Scenario: Game over: Discovering all mines
 Given the user loads the following mock data: "oxx"
 When the user discovers the cell "(1, 2)"
@@ -60,7 +60,7 @@ Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 2)"
 Then all the board cells should be disabled
 
-@Notcurrent
+@testDone
 Scenario Outline: Discovering a cell: Cell without mine, but with adjacent mined cells -> Should show the number of adjacent mines
 Given the user loads the following mock data: "<mockData>"
 When the user discovers the cell "(2, 2)"  
@@ -77,7 +77,7 @@ Examples:
 | xxx-xox-xox |     7     |
 | xxx-xox-xxx |     8     |
 
-@Notcurrent
+@testDone
 Scenario: Discovering all the non-mined cells: Win the game
 Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 1)"
@@ -89,9 +89,9 @@ Given the user loads the following mock data: "ox"
 When the user discovers the cell "(1, 1)"
 Then all the board cells should be disabled
 
-@Notcurrent
+@testDone
 Scenario: Discovering a cell: A cell without mine and without surrounding mines -> Empty cell
-Given the user loads the followig mock data:
+Given the user loads the following mock data:
 """
 ooo
 ooo
@@ -101,9 +101,9 @@ xxx
 When the user discovers the cell "(2, 2)"
 Then the cell "(2, 2)" should be empty
 
-@current
+@testDone
 Scenario: Discovering a cell: Empty cell -> All the adjacent cells should be discovered 
-Given the user loads the followig mock data: 
+Given the user loads the following mock data: 
 """
 ooo
 ooo
@@ -119,7 +119,7 @@ Then the board display should show the following value:
 ###
 """
 
-@showBoardDisplay
+@testDone
 Scenario: When an empty is cell discovered by a neighbour -> Reveal the adjacent cells of the empty cell
 Given the user loads the following mock data:
 """
@@ -137,28 +137,41 @@ Then the board display should show the following value:
 ##10
 """
 
-@Notcurrent
+@testDone
 Scenario: Tagging a cell: if the user believes there's a mine in a cell, it can be tagged as suspected
 When the user tags the cell "(1, 1)" as suspected
 Then the cell "(1, 1)" should show the suspected tag
 
-@Notcurrent
+@testDone
 Scenario: Untag a suspected cell
 And the user tags the cell "(1, 1)" as suspected
 When the user untags the cell "(1, 1)"
 Then the cell "(1, 1)" shouldn't show the suspected tag
 
-@showBoardDisplay
+@current
+Scenario Outline: Default screen values: Untagged mines counter
+Given the user loads the following mock data: "<mockData>"
+Then the untagged mines counter should be set at: "<untaggedMinesCounter>"
+
+Examples:
+|    mockData    | untaggedMinesCounter |
+|    xoo-ooo     |          1           |
+|    xxx-ooo     |          3           |
+|    xxx-oox     |          4           |
+|  xxx-oxx-xxo   |          7           |
+|  xxx-oxx-xxx   |          8           |
+
+@testDone
 Scenario: Game over having cells tagged as suspected: Discover all the mines except the ones tagged as suspected
 Given the user loads the following mock data: "oxxox"
 And the user tags the cell "(1, 2)" as suspected
 When the user discovers the cell "(1, 3)"
-Then the board display should show the followin value: "#!*#*"
+Then the board display should show the following value: "#!*#*"
 
-@showBoardDisplay
+@testDone
 Scenario: Wining the game: Tag all the remaining mines as suspected
 Given the user loads the following mock data: "oxxox"
 And the user tags the cell "(1, 2)" as suspected
-When the user discovers the following cell: "(1, 1)"
-And the user discovers the following cell: "(1, 4)"
+When the user discovers the cell "(1, 1)"
+And the user discovers the cell "(1, 4)"
 Then the board display should show the following value: "1!!2!"  

@@ -92,6 +92,7 @@ export function discoverCell(board, cell){
     }
 
     if(cell.mine){
+        cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.MINE
         cell.element.textContent = "*"
         return
@@ -103,9 +104,11 @@ export function discoverCell(board, cell){
     const mines = adjacentCells.filter(adjacentCell => adjacentCell.mine)
 
     if(mines.length === 0){
+        cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.EMPTY
         adjacentCells.forEach(discoverCell.bind(null, board))  //aqui ocurre la magia de destapar las empty
     } else{
+        cell.element.setAttribute("disabled", true)
         cell.element.textContent = mines.length;
     }
 }
@@ -147,6 +150,7 @@ export function tagAllMines(board){
     board.forEach(row =>{
         row.forEach(cell =>{
             if(cell.mine){
+                cell.element.setAttribute("disabled", true)
                 cell.status = Cell_Status.TAGGED
                 cell.element.textContent = "!"
             }
