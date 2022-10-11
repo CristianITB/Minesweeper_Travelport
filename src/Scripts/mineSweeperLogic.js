@@ -2,8 +2,9 @@ export const Cell_Status = {
     HIDDEN: "hidden",
     MINE: "mine",
     NUMBER: "number",
-    TAGGED: "tagged",
-    EMPTY: "empty"      //"empty" wasn't really necessary, but was usefull for testing
+    SUSPECTED: "suspected",
+    EMPTY: "empty",                 //"empty" wasn't really necessary, but was usefull for testing
+    QUESTIONABLE: "questionable"
 }
 
 //Haure de canviar el board size per ser un array amb les variables x i y o algo aixi per quan faci servir mock data
@@ -42,6 +43,7 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
         }
         board.push(row)
     }
+    console.log(minePositions)
     return board
 }
 
@@ -50,8 +52,8 @@ function getMinePositions(numberOfRows, numberOfColumns, numberOfMines){
 
     while(positions.length < numberOfMines){
         const position = {
-            x: randomNumber(numberOfRows),
-            y: randomNumber(numberOfColumns)
+            x: getRandomNumber(numberOfRows),
+            y: getRandomNumber(numberOfColumns)
         }
 
         //"some" returns true if at least one of the elements of the array matches the thing. The inside "p =>...is like a for each position"
@@ -69,25 +71,27 @@ function positionMatch(a, b){
     return a.x === b.x && a.y === b.y
 }
 
-function randomNumber(size){
+function getRandomNumber(size){
     return Math.floor(Math.random() * size)
 }
 
 export function tagCell(cell){
-    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.TAGGED){
-        return 
-    }
-    if(cell.status === Cell_Status.TAGGED){
+    if(cell.status === Cell_Status.HIDDEN){
+        cell.status = Cell_Status.SUSPECTED
+        cell.element.textContent = "!"
+    } else if(cell.status === Cell_Status.SUSPECTED){
+        cell.status = Cell_Status.QUESTIONABLE
+        cell.element.textContent = "?"
+    } else if(cell.status === Cell_Status.QUESTIONABLE){
         cell.status = Cell_Status.HIDDEN
         cell.element.textContent = ""
     } else{
-        cell.status = Cell_Status.TAGGED
-        cell.element.textContent = "!"
+        return
     }
 }
 
 export function discoverCell(board, cell){
-    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.TAGGED){
+    if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.SUSPECTED && cell.status !== Cell_Status.QUESTIONABLE){
         return
     }
 
@@ -131,7 +135,7 @@ export function checkWin(board){
     return board.every(row =>{
         return row.every(cell =>{
             return (cell.status === Cell_Status.NUMBER || cell.status === Cell_Status.EMPTY ||
-                   (cell.mine && (cell.status === Cell_Status.HIDDEN || cell.status === Cell_Status.TAGGED))
+                   (cell.mine && (cell.status === Cell_Status.HIDDEN || cell.status === Cell_Status.SUSPECTED))
                    )
         })
     })
@@ -151,9 +155,20 @@ export function tagAllMines(board){
         row.forEach(cell =>{
             if(cell.mine){
                 cell.element.setAttribute("disabled", true)
-                cell.status = Cell_Status.TAGGED
+                cell.status = Cell_Status.SUSPECTED
                 cell.element.textContent = "!"
             }
+        })
+    })
+}
+
+export function cleanBoardDisplay(boardSito){
+    boardSito.forEach(row =>{
+        row.forEach(cell =>{
+            cell.element.removeAttribute("disabled")
+            cell.status = Cell_Status.HIDDEN
+            cell.element.textContent = ""
+            console.log("pero entra?")
         })
     })
 }

@@ -1,8 +1,8 @@
-import { createBoard, tagCell, Cell_Status, discoverCell, checkWin, checkLose, tagAllMines } from "./mineSweeperLogic.js";
+import { createBoard, tagCell, Cell_Status, discoverCell, checkWin, checkLose, tagAllMines, cleanBoardDisplay } from "./mineSweeperLogic.js";
 
 var numberOfRows = 8
 var numberOfColumns = 8
-var numberOfMines = 10
+var numberOfMines = 4
 
 /* ---------- Timer ---------- */
 var seconds = 0;
@@ -45,8 +45,7 @@ function getMineMockDataPositions(splittedMockData){
 }
 /* ------------------------------------------ */
     
-
-const board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
+var board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
 const boardElement = document.querySelector(".board")
 const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
 const messageText = document.querySelector(".subtext")
@@ -82,7 +81,7 @@ untaggedMinesCounter.textContent = numberOfMines
 
 function listMinesLeft(){
     const taggedCellsCount = board.reduce((count, row) => {
-        return count + row.filter(cell => cell.status === Cell_Status.TAGGED).length
+        return count + row.filter(cell => cell.status === Cell_Status.SUSPECTED).length
     }, 0) //it sets the count at 0
     untaggedMinesCounter.textContent = numberOfMines - taggedCellsCount
 }
@@ -106,7 +105,7 @@ function checkEndGame(){
         messageText.textContent = "You lost the game like you lose everything in life loser."
         board.forEach(row => {
             row.forEach(cell => {
-                if (cell.mine && cell.status !== Cell_Status.TAGGED){
+                if (cell.mine && cell.status !== Cell_Status.SUSPECTED){
                     discoverCell(board, cell)
                 } else{
                     cell.element.setAttribute("disabled", true)
@@ -123,9 +122,11 @@ function stopProp(e){
 
 const restartButton = document.querySelector(".restartButton")
 restartButton.addEventListener("click", () =>{
-    location.reload();
+    //location.reload();
+    let newBoard = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
+    cleanBoardDisplay(board)
+    board = newBoard
 })
-
 
 
 /* ------- Timer functions ------- */
@@ -157,3 +158,5 @@ function stopTimer(){
 	clearInterval(interval);
 	interval = null;
 }
+/* ------------------------------- */
+

@@ -34,38 +34,43 @@ So "ox" would define a 1 row and 2 columns board, and "xoo-ooo" a board with 2 r
 Background:
 Given a user opens the app
 
-@current
+@testDone
 Scenario Outline: Default screen values: Time counter
 Then the time display should be "⏳ 00:00:00"
 
+@testDone
 Scenario: Tagging a cell: if the user doesn't know the value of a cell, it can be tagged as questionable
 When the user tags the cell "(1, 1)" as questionable
 Then the cell "(1, 1)" should show the questionable tag
 
+@testDone
 Scenario: Untag a questionable cell
-And the cell "(1, 1)" is tagged as questionable
-When the user untags the cell "(1, 1)"
+Given the user tags the cell "(1, 1)" as questionable
+When the user untags the questionable cell "(1, 1)"
 Then the cell "(1, 1)" shouldn't show the questionable tag 
 
+@testDone
 Scenario: Tagging a cell as suspected -> Untagged mines counter decreases
 Given the user loads the following mock data: "ox"
-And the untagged mines counter is 1
+And the untagged mines counter is "1"
 When the user tags the cell "(1, 1)" as suspected
-Then the untagged mines counter should be 0
+Then the untagged mines counter should be set at: "0"
 
+@testDone
 Scenario: Tagging a suspected cell as questionable -> Untagged mines counter increases
 Given the user loads the following mock data: "ox"
 And the user tags the cell "(1, 1)" as suspected
-And the untagged mines counter is 0
+And the untagged mines counter is "0"
 When the user tags the cell "(1, 1)" as questionable
-And the untagged mines counter should be 1
+And the untagged mines counter should be set at: "1"
 
+@testDone
 Scenario: Discovering a cell: Cell tagged as suspected -> Increase untagged mines counter
 Given the user loads the following mock data: "oxo"
 And the user tags the cell "(1, 1)" as suspected
-And the untagged mines counter is 0
+And the untagged mines counter is "0"
 When the user discovers the cell "(1, 1)"
-Then the untagged mines counter display should be 1
+Then the untagged mines counter should be set at: "1"
 
 @manual
 Scenario Outline: Increase time counter
@@ -81,31 +86,26 @@ Examples:
 |      10      |          11         |
 |      35      |          36         |
 
-Scenario: Time counter limit
-Given the user loads the following time mock data: "995"
-When 4 seconds have passed
-Then the time display should show the following value: "∞"
-
 @manual
 Scenario: Game starts by tagging as suspected -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is empty
+And the time display is set at: 00:00:00
 When the user tags the cell "(1, 1)" as suspected
-Then the time counter should be 1
+Then the time display should be set at: 00:00:01
 
 @manual
 Scenario: Game starts by tagging as questionable -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is empty
+And the time display is set at: 00:00:00
 When the user tags the cell "(1, 1)" as questionable
-Then the time counter should be 1
+Then the time display should be set at: 00:00:01
 
 @manual
 Scenario: Game starts by discovering -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is empty
+And the time display is set at: 00:00:00
 When the user discovers the cell "(1, 1)"
-Then the time counter should be 1
+Then the time display should be set at: 00:00:01
 
 @manual
 Scenario: Game over: Time display stops increasing
@@ -121,6 +121,7 @@ When a few seconds have passed
 And the user discovers the cell "(1, 1)"
 Then the time display should stop increasing
 
+@current
 Scenario: Restart button
 Given the user loads the following mock data: 
 """
@@ -136,14 +137,14 @@ And the user discovers the cell "(1, 1)"
 When the user restarts the game
 Then all the cells should be covered
 And all the cells should be enabled
-And the time display should be empty
-And the untagged mines counter should be 3
+And the time display is set at: 00:00:00
+And the untagged mines counter should be set at: "3"
 
 @mouse
 Scenario: Change tag from suspected to questionable with the mouse
 Given the user loads the following mock data: "ox"
 And the cell "(1, 1)" is tagged as suspected
-And the untagged mines counter is 0
+And the untagged mines counter is set at: "0"
 When the user right clicks on the cell "(1, 1)"
 Then the cell "(1, 1)" should be tagged as questionable
-And the untagged mines counter should be 1
+And the untagged mines counter should be set at: "1"

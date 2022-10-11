@@ -145,7 +145,7 @@ Then the cell "(1, 1)" should show the suspected tag
 @testDone
 Scenario: Untag a suspected cell
 And the user tags the cell "(1, 1)" as suspected
-When the user untags the cell "(1, 1)"
+When the user untags the suspected cell "(1, 1)"
 Then the cell "(1, 1)" shouldn't show the suspected tag
 
 @current
