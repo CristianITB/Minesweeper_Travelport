@@ -15,13 +15,25 @@ const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 const mockData = urlParams.get('mockData')
 
-//Comprovar qe el mockData sea solo "o" y "x" ?
-if(mockData != null){
+if(mockData != null && checkMockData(mockData)){
     const splittedMockData = splitMockData(mockData)
     numberOfRows = splittedMockData.length
     numberOfColumns = splittedMockData[0].length
     minePositionsMockData = getMineMockDataPositions(splittedMockData)
     numberOfMines = minePositionsMockData.length
+} else if(mockData != null){
+    window.alert("Mock data has a typo error. Please check it and try to reconnect.")
+}
+
+function checkMockData(mockData){
+    let mockDataIsFine = true
+    for(let i = 0; i < mockData.length; i++){
+        if(mockData[i] != "x" && mockData[i] != "o"){
+            mockDataIsFine = false
+            break
+        }
+    }
+    return mockDataIsFine
 }
 
 function splitMockData(mockData) {
@@ -50,8 +62,7 @@ const boardElement = document.querySelector(".board")
 const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
 const messageText = document.querySelector(".subtext")
 
-const boardDiv = document.querySelector(".board")
-const count = boardDiv.childNodes
+const count = boardElement.childNodes
 //console.log(count)
 //console.log(count.length)
 //no aconsegueixo treure el nombre de child divs qe te el board, qe voldria saber-ho
@@ -62,6 +73,7 @@ board.forEach(row => {
     row.forEach(cell => {
         boardElement.append(cell.element)
         cell.element.addEventListener("click", () =>{
+            console.log("hace click ")
             startTimer()
             discoverCell(board, cell)
             checkEndGame()
@@ -92,8 +104,8 @@ function checkEndGame(){
 
     if(win || lose){
         stopTimer();
-        boardElement.addEventListener("click", stopProp, {capture: true}) //capture phase occurs before bubble phase, which is the one used in l.14
-        boardElement.addEventListener("contextmenu", stopProp, {capture: true})
+        //boardElement.addEventListener("click", stopProp, {capture: true}) //capture phase occurs before bubble phase, which is the one used in l.14
+        //boardElement.addEventListener("contextmenu", stopProp, {capture: true})
     }
 
     if(win){
@@ -123,10 +135,15 @@ function stopProp(e){
 const restartButton = document.querySelector(".restartButton")
 restartButton.addEventListener("click", () =>{
     //location.reload();
-    let newBoard = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
-    cleanBoardDisplay(board)
-    board = newBoard
+    board = resetBoard()
 })
+
+function resetBoard(){
+    resetTimer()
+    cleanBoardDisplay(board)
+    let newBoard = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
+    return newBoard
+}
 
 
 /* ------- Timer functions ------- */
@@ -157,6 +174,12 @@ function startTimer(){
 function stopTimer(){
 	clearInterval(interval);
 	interval = null;
+}
+
+function resetTimer(){
+	stopTimer();
+	seconds = 0;
+	timerDiv.innerText = '⏳ 00:00:00';
 }
 /* ------------------------------- */
 

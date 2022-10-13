@@ -7,7 +7,6 @@ export const Cell_Status = {
     QUESTIONABLE: "questionable"
 }
 
-//Haure de canviar el board size per ser un array amb les variables x i y o algo aixi per quan faci servir mock data
 export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData){
     var minePositions = null
     if(minePositionsMockData == null){
@@ -43,7 +42,6 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
         }
         board.push(row)
     }
-    console.log(minePositions)
     return board
 }
 
@@ -162,13 +160,12 @@ export function tagAllMines(board){
     })
 }
 
-export function cleanBoardDisplay(boardSito){
-    boardSito.forEach(row =>{
+export function cleanBoardDisplay(board){
+    board.forEach(row =>{
         row.forEach(cell =>{
             cell.element.removeAttribute("disabled")
             cell.status = Cell_Status.HIDDEN
             cell.element.textContent = ""
-            console.log("pero entra?")
         })
     })
 }
