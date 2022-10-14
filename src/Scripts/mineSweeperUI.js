@@ -2,7 +2,7 @@ import { createBoard, tagCell, Cell_Status, discoverCell, checkWin, checkLose, t
 
 var numberOfRows = 8
 var numberOfColumns = 8
-var numberOfMines = 4
+var numberOfMines = 10
 
 /* ---------- Timer ---------- */
 var seconds = 0;
@@ -58,9 +58,9 @@ function getMineMockDataPositions(splittedMockData){
 /* ------------------------------------------ */
     
 var board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData))
-const boardElement = document.querySelector(".board")
-const untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
-const messageText = document.querySelector(".subtext")
+var boardElement = document.querySelector(".board")
+var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]")
+var messageText = document.querySelector(".subtext")
 
 const count = boardElement.childNodes
 //console.log(count)
@@ -73,7 +73,6 @@ board.forEach(row => {
     row.forEach(cell => {
         boardElement.append(cell.element)
         cell.element.addEventListener("click", () =>{
-            console.log("hace click ")
             startTimer()
             discoverCell(board, cell)
             checkEndGame()
@@ -87,6 +86,7 @@ board.forEach(row => {
         })
     })
 })
+
 boardElement.style.setProperty("--rowsSize", numberOfRows)
 boardElement.style.setProperty("--columnsSize", numberOfColumns)
 untaggedMinesCounter.textContent = numberOfMines
@@ -104,8 +104,8 @@ function checkEndGame(){
 
     if(win || lose){
         stopTimer();
-        //boardElement.addEventListener("click", stopProp, {capture: true}) //capture phase occurs before bubble phase, which is the one used in l.14
-        //boardElement.addEventListener("contextmenu", stopProp, {capture: true})
+        boardElement.addEventListener("click", stopProp, {capture: true}) //capture phase occurs before bubble phase, which is the one used in l.14
+        boardElement.addEventListener("contextmenu", stopProp, {capture: true})
     }
 
     if(win){
@@ -134,8 +134,8 @@ function stopProp(e){
 
 const restartButton = document.querySelector(".restartButton")
 restartButton.addEventListener("click", () =>{
-    //location.reload();
-    board = resetBoard()
+    location.reload();
+    //board = resetBoard()
 })
 
 function resetBoard(){
@@ -183,3 +183,6 @@ function resetTimer(){
 }
 /* ------------------------------- */
 
+function getBoard(){
+    return board
+}

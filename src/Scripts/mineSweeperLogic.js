@@ -96,7 +96,6 @@ export function discoverCell(board, cell){
     if(cell.mine){
         cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.MINE
-        cell.element.textContent = "*"
         return
     }
 
@@ -112,6 +111,7 @@ export function discoverCell(board, cell){
     } else{
         cell.element.setAttribute("disabled", true)
         cell.element.textContent = mines.length;
+        cell.element.classList.add("mines"+ mines.length)
     }
 }
 

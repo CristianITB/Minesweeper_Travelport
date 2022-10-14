@@ -101,7 +101,6 @@ Then('the cell {string} should be discovered', async (cellCoord) => {
 })
 
 Then('the cell {string} should show the following value: {string}', async(cellCoord, cellValue) => {
-	console.log("cell value " + cellValue)
 	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
 	expect(cellStatus).toBe(cellValue)
 })
