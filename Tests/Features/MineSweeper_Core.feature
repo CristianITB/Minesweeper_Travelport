@@ -148,7 +148,7 @@ And the user tags the cell "(1, 1)" as suspected
 When the user untags the suspected cell "(1, 1)"
 Then the cell "(1, 1)" shouldn't show the suspected tag
 
-@current
+@testDone
 Scenario Outline: Default screen values: Untagged mines counter
 Given the user loads the following mock data: "<mockData>"
 Then the untagged mines counter should be set at: "<untaggedMinesCounter>"

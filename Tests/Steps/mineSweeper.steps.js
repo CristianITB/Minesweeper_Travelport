@@ -39,6 +39,15 @@ async function displayShowValue(displayValue){
 	}
 }
 
+async function getCellStatus(cellCoord, expectedCelStatus){
+	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
+	expect(cellStatus).toBe(expectedCelStatus)
+}
+
+async function getCellTextContent(cellCoord, expectedTextContent){
+	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
+	expect(cellStatus).toBe(expectedTextContent)
+}
 
 Given('a user opens the app', async () => {
 	await page.goto(url);
@@ -58,8 +67,7 @@ Then('all the cells should be covered', async () => {
 	for(let x = 1; x < 9; x++){
 		for(let y = 1; y < 9; y++){
 			const cellCoord = "(" + x + ", " + y + ")"
-			const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-			expect(cellStatus).toBe("hidden")
+			await getCellStatus(cellCoord, "hidden")
 		}
 	}
 })
@@ -78,8 +86,7 @@ When('the user discovers the cell {string}', async (cellCoord) => {
 })
 
 Then('the cell {string} should show a mine', async (cellCoord) => {
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("mine")
+	await getCellStatus(cellCoord, "mine")
 })
 
 Then('the board display should show the following value:', async (displayValue) => {
@@ -96,13 +103,11 @@ Then('the game should be over', async () => {
 })
 
 Then('the cell {string} should be discovered', async (cellCoord) => {
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("mine")
+	await getCellStatus(cellCoord, "mine")
 })
 
 Then('the cell {string} should show the following value: {string}', async(cellCoord, cellValue) => {
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
-	expect(cellStatus).toBe(cellValue)
+	await getCellTextContent(cellCoord, cellValue)
 })
 
 Then('the user should win the game', async () => {
@@ -115,8 +120,7 @@ Given('the user loads the following mock data:', async (mockData) => {
 });
 
 Then('the cell {string} should be empty', async (cellCoord) => {
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("empty")
+	await getCellStatus(cellCoord, "empty")
 })
 
 When('the user tags the cell {string} as suspected', async (cellCoord) => {
@@ -124,11 +128,8 @@ When('the user tags the cell {string} as suspected', async (cellCoord) => {
 })
 
 Then('the cell {string} should show the suspected tag', async (cellCoord) => {
-	const cellTextContent = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
-	expect(cellTextContent).toBe("!")
-
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("suspected")
+	await getCellTextContent(cellCoord, "!")
+	await getCellStatus(cellCoord, "suspected")
 })
 
 When('the user untags the suspected cell {string}', async (cellCoord) => {
@@ -136,18 +137,14 @@ When('the user untags the suspected cell {string}', async (cellCoord) => {
 })
 
 Then("the cell {string} shouldn't show the suspected tag", async (cellCoord) => {
-	const cellTextContent = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
-	expect(cellTextContent).toBe("")
-
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("hidden")
+	await getCellTextContent(cellCoord, "")
+	await getCellStatus(cellCoord, "hidden")
 })
 
 Then('the untagged mines counter should be set at: {string}', async (untaggedMinesCounter) => {
 	const displayMineCounter = await page.locator(".subtext").textContent()
 	expect(displayMineCounter).toBe("💣 Mines left: " + untaggedMinesCounter)
 })
-
 
 
 /* ---- Specific feature below here ---- */
@@ -161,11 +158,8 @@ When('the user tags the cell {string} as questionable', async(cellCoord) => {
 })
 
 Then('the cell {string} should show the questionable tag', async (cellCoord) => {
-	const cellTextContent = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
-	expect(cellTextContent).toBe("?")
-
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("questionable")
+	await getCellTextContent(cellCoord, "?")
+	await getCellStatus(cellCoord, "questionable")
 })
 
 When('the user untags the questionable cell {string}', async (cellCoord) => {
@@ -173,11 +167,8 @@ When('the user untags the questionable cell {string}', async (cellCoord) => {
 })
 
 Then("the cell {string} shouldn't show the questionable tag", async (cellCoord) => {
-	const cellTextContent = await page.locator(`[data-testid="${cellCoord}"]`).textContent();
-	expect(cellTextContent).toBe("")
-
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
-	expect(cellStatus).toBe("hidden")
+	await getCellTextContent(cellCoord, "")
+	await getCellStatus(cellCoord, "hidden")
 })
 
 Given('the untagged mines counter is {string}', async(counter) => {

@@ -80,11 +80,11 @@ Then the time display should show the following value: "<time display result>"
 
 Examples:
 | time display | time display result | 
-|       0      |           1         |
-|       1      |           2         |
-|       3      |           4         |
-|      10      |          11         |
-|      35      |          36         |
+|   00:00:00   |       00:00:01      |
+|   00:00:01   |       00:00:02      |
+|   00:00:03   |       00:00:04      |
+|   00:04:10   |       00:04:11      |
+|   00:10:35   |       00:10:36      |
 
 @manual
 Scenario: Game starts by tagging as suspected -> Time counter starts increasing
@@ -121,7 +121,7 @@ When a few seconds have passed
 And the user discovers the cell "(1, 1)"
 Then the time display should stop increasing
 
-@current
+@toBeDone
 Scenario: Restart button
 Given the user loads the following mock data: 
 """

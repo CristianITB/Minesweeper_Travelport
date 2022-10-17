@@ -97,11 +97,11 @@ body {
 }
 
 .mines2{
-  color: red;
+  color: green;
 }
 
 .mines3{
-  color: green;
+  color: red;
 }
 
 .mines4{
@@ -109,17 +109,17 @@ body {
 }
 
 .mines5{
-  color: pink;
+  color: maroon;
 }
 
 .mines6{
-  color: yellow;
+  color: turquoise;
 }
 
 .mines7{
-  color: lightblue;
+  color: black;
 }
 
 .mines8{
-  color: black;
+  color: gray;
 }

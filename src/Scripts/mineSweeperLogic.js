@@ -159,13 +159,3 @@ export function tagAllMines(board){
         })
     })
 }
-
-export function cleanBoardDisplay(board){
-    board.forEach(row =>{
-        row.forEach(cell =>{
-            cell.element.removeAttribute("disabled")
-            cell.status = Cell_Status.HIDDEN
-            cell.element.textContent = ""
-        })
-    })
-}
