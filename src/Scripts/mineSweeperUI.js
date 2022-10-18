@@ -59,8 +59,8 @@ function getMineMockDataPositions(splittedMockData){
     
 var board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData));
 var boardElement = document.querySelector(".board");
-var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 var messageText = document.querySelector(".subtext");
+var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 
 const count = boardElement.childNodes;
 //console.log(count)
@@ -145,13 +145,22 @@ restartButton.addEventListener("click", () =>{
 function resetBoard(){
     resetTimer();
     document.querySelector(".board").innerHTML = "";
-    //document.querySelector(".subtext").innerHTML = "💣 Mines left: " + numberOfMines;
-    //aquesta linea em canvia el missatge pero dp quan tagejo no ho actualitza :/
-    untaggedMinesCounter.textContent = numberOfMines;
+
+    messageText.innerText = "💣 Mines left: ";
+    createMinesTextSpan()
+
     boardElement.removeEventListener("click", stopProp, {capture: true});
     boardElement.removeEventListener("contextmenu", stopProp, {capture: true});
 
     board = (createBoard(numberOfRows, numberOfColumns, numberOfMines, minePositionsMockData));
+}
+
+function createMinesTextSpan(){
+    let minesSpan = document.createElement("span")
+    minesSpan.setAttribute("untagged-mines-counter", "")
+    minesSpan.innerHTML = numberOfMines
+    messageText.appendChild(minesSpan)
+    untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 }
 
 

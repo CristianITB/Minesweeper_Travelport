@@ -64,8 +64,8 @@ Then('the display should show an 8x8 cells board', async () => {
 })
 
 Then('all the cells should be covered', async () => {
-	for(let x = 1; x < 9; x++){
-		for(let y = 1; y < 9; y++){
+	for(let x = 1; x < 4; x++){
+		for(let y = 1; y < 3; y++){
 			const cellCoord = "(" + x + ", " + y + ")"
 			await getCellStatus(cellCoord, "hidden")
 		}
@@ -176,9 +176,13 @@ Given('the untagged mines counter is {string}', async(counter) => {
 	expect(displayMineCounter).toBe("💣 Mines left: " + counter)
 })
 
+When('the user restarts the game', async() => {
+	await page.click(".restartButton", { force: true })
+})
+
 Then('all the cells should be enabled', async () => {
-	for(let x = 1; x < 9; x++){
-		for(let y = 1; y < 9; y++){
+	for(let x = 1; x < 4; x++){
+		for(let y = 1; y < 3; y++){
 			const cellCoord = "(" + x + ", " + y + ")"
 			const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("disabled");
 			expect(cellStatus).toBe(null)

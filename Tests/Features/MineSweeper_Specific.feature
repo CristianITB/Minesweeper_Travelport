@@ -89,23 +89,23 @@ Examples:
 @manual
 Scenario: Game starts by tagging as suspected -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is set at: 00:00:00
+And the time display is set at: "00:00:00"
 When the user tags the cell "(1, 1)" as suspected
-Then the time display should be set at: 00:00:01
+Then the time display should be set at: "00:00:01"
 
 @manual
 Scenario: Game starts by tagging as questionable -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is set at: 00:00:00
+And the time display is set at: "00:00:00"
 When the user tags the cell "(1, 1)" as questionable
-Then the time display should be set at: 00:00:01
+Then the time display should be set at: "00:00:01"
 
 @manual
 Scenario: Game starts by discovering -> Time counter starts increasing
 Given the user loads the following mock data: "ox"
-And the time display is set at: 00:00:00
+And the time display is set at: "00:00:00"
 When the user discovers the cell "(1, 1)"
-Then the time display should be set at: 00:00:01
+Then the time display should be set at: "00:00:01"
 
 @manual
 Scenario: Game over: Time display stops increasing
@@ -121,23 +121,23 @@ When a few seconds have passed
 And the user discovers the cell "(1, 1)"
 Then the time display should stop increasing
 
-@toBeDone
+@current
 Scenario: Restart button
 Given the user loads the following mock data: 
 """
 ooo
 ooo
 ooo
-***
+xxx
 """
 And the user discovers the cell "(3, 1)"
-And the user tags de cell "(4, 1)" as questionable
+And the user tags the cell "(4, 1)" as questionable
 And the user tags the cell "(4, 2)" as suspected
 And the user discovers the cell "(1, 1)"
 When the user restarts the game
 Then all the cells should be covered
 And all the cells should be enabled
-And the time display is set at: 00:00:00
+And the time display should be "⏳ 00:00:00"
 And the untagged mines counter should be set at: "3"
 
 @mouse
