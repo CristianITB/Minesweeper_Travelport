@@ -62,11 +62,20 @@ var boardElement = document.querySelector(".board");
 var messageText = document.querySelector(".subtext");
 var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 
-const count = boardElement.childNodes;
+//var count = boardElement.getElementsByTagName('div');
+//const count = boardElement.childNodes;
 //console.log(count)
 //console.log(count.length)
 //no aconsegueixo treure el nombre de child divs qe te el board, qe voldria saber-ho
 //per poder fer el test de default screen show a 8x8 board
+
+function countDivs(){
+    var manolo = document.querySelector(".board");
+    var count = manolo.getElementsByTagName('div');
+    console.log(count)
+    console.log(count.length)
+}
+countDivs()
 
 //Setting up the board
 function setUpBoard(){

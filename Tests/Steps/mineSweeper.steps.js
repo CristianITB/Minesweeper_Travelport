@@ -54,14 +54,18 @@ Given('a user opens the app', async () => {
 });
 
 Then('the display should show an 8x8 cells board', async () => {
-	const boardDiv = await page.locator(".board")
-	console.log("holaaaaa " + boardDiv)
-	const boardDivChildren = boardDiv.childNodes
-	expect(boardDivChildren).toBe(64)
-//	boardDivChildren.forEach(div => {
-//	
-//	})
+    const cells = await page.locator('data-testid')
+    let numberOfColumns = await cells.count();
+    expect(numberOfColumns.toString()).toBe(64);
 })
+
+/*
+Then('the number of cells in the board should be: {string}', async (string) => {
+    const cells = await page.locator('.cell')
+    let numberOfColumns = await cells.count();
+    expect(numberOfColumns.toString()).toBe(string);
+});
+*/
 
 Then('all the cells should be covered', async () => {
 	for(let x = 1; x < 4; x++){
