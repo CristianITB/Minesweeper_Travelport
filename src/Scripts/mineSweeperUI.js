@@ -22,7 +22,7 @@ if(mockData != null && checkMockData(mockData)){
     minePositionsMockData = getMineMockDataPositions(splittedMockData);
     numberOfMines = minePositionsMockData.length;
 } else if(mockData != null){
-    window.alert("Mock data has a typo error. Please check it and try to reconnect.");
+    window.alert("Mock data has a typo error. Please, check it and try to reconnect.");
 }
 
 function checkMockData(mockData){
@@ -146,7 +146,6 @@ function stopProp(e){
 
 const restartButton = document.querySelector(".restartButton")
 restartButton.addEventListener("click", () =>{
-    //location.reload();
     resetBoard();
     setUpBoard();
 })
