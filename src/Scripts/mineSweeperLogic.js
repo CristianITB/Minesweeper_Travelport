@@ -31,6 +31,7 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
                 x,
                 y,
                 mine: minePositions.some(positionMatch.bind(null, {x, y})),  //checks if the positoins in "minePositions" matches de x, y coord above. If they match, mine = true
+                
                 get status(){
                     return this.element.dataset.status
                 },
@@ -94,6 +95,7 @@ export function discoverCell(board, cell){
     }
 
     if(cell.mine){
+        cell.element.textContent = ""
         cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.MINE
         return

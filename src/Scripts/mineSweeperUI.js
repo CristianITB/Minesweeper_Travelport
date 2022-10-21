@@ -72,10 +72,10 @@ var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 function countDivs(){
     var manolo = document.querySelector(".board");
     var count = manolo.getElementsByTagName('div');
-    console.log(count)
-    console.log(count.length)
+    //console.log(count)
+    //console.log(count.length)
 }
-countDivs()
+//countDivs()
 
 //Setting up the board
 function setUpBoard(){
@@ -131,6 +131,8 @@ function checkEndGame(){
             row.forEach(cell => {
                 if (cell.mine && cell.status !== Cell_Status.SUSPECTED){
                     discoverCell(board, cell);
+                } else if(!cell.mine && cell.status === Cell_Status.SUSPECTED){
+                    cell.element.textContent = "❌"
                 } else{
                     cell.element.setAttribute("disabled", true);
                 }
