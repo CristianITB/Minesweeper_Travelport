@@ -48,7 +48,7 @@ body {
   user-select: none;
 }
 
-.board > [data-status="hidden"] {
+.board > [status="hidden"] {
   background-color: #BBB;
   cursor: pointer;
 }

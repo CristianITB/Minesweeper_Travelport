@@ -21,23 +21,30 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
         const row = []
         for(let y = 0; y < numberOfColumns; y++){
             const element = document.createElement("div")
-            element.dataset.status = Cell_Status.HIDDEN
+            //element.dataset.status = Cell_Status.HIDDEN
+            
             let xCorrected = x+1
             let yCorrected = y+1
             element.setAttribute("data-testid", "(" + xCorrected + ", " + yCorrected + ")")
 
+            //let status = element.dataset.status
+
             const cell = {
+                status: Cell_Status.HIDDEN,
                 element,
                 x,
                 y,
                 mine: minePositions.some(positionMatch.bind(null, {x, y})),  //checks if the positoins in "minePositions" matches de x, y coord above. If they match, mine = true
                 
+                /*
                 get status(){
                     return this.element.dataset.status
                 },
                 set status(value){
                     this.element.dataset.status = value
                 }
+                */
+                
             }
             row.push(cell)
         }
@@ -75,6 +82,7 @@ function getRandomNumber(size){
 }
 
 export function tagCell(cell){
+    console.log(cell.x + " la x, " + "la y " + cell.y)
     if(cell.status === Cell_Status.HIDDEN){
         cell.status = Cell_Status.SUSPECTED
         cell.element.textContent = "!"
@@ -90,6 +98,12 @@ export function tagCell(cell){
 }
 
 export function discoverCell(board, cell){
+    /*
+    console.log(cell)
+    console.log(cell.status)
+    cell.status = Cell_Status.SUSPECTED
+    console.log(cell)
+    */
     if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.SUSPECTED && cell.status !== Cell_Status.QUESTIONABLE){
         return
     }

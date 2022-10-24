@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test:e2e": "cucumber-js --require cucumber.conf.js --require Tests/Steps/**/*.steps.js --format @cucumber/pretty-formatter --format html:Tests/Reports/cucumber-report.html --tags \"@current\" --parallel 4"
+    "test:e2e": "cucumber-js --require cucumber.conf.js --require Tests/Steps/**/*.steps.js --format @cucumber/pretty-formatter --format html:Tests/Reports/cucumber-report.html --tags \"@testDone\" --parallel 4"
   },
   "devDependencies": {
     "@cucumber/cucumber": "^8.5.2",

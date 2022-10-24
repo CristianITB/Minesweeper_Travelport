@@ -129,6 +129,7 @@ function checkEndGame(){
         messageText.textContent = "You lost the game like you lose everything in life loser.";
         board.forEach(row => {
             row.forEach(cell => {
+                console.log(cell)
                 if (cell.mine && cell.status !== Cell_Status.SUSPECTED){
                     discoverCell(board, cell);
                 } else if(!cell.mine && cell.status === Cell_Status.SUSPECTED){
