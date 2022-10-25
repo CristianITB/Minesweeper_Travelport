@@ -48,31 +48,31 @@ body {
   user-select: none;
 }
 
-.board > [status="hidden"] {
+.hiddenCell{
   background-color: #BBB;
   cursor: pointer;
 }
 
-.board > [data-status="mine"] {
+.minedCell{
   background-color: red;
 }
 
-.board > [data-status="mine"]::after {
-  content: "💣";
-}
-
-.board > [data-status="number"] {
-  background-color: none;
+.numberedCell{
+  background-color: #777;
   font-weight: bold;
 }
 
-.board > [data-status="suspected"] {
+.emptyCell{
+  background-color: #777;
+}
+
+.suspectedCell{
   background-color: lightcoral;
   color: black;
   cursor: pointer;
 }
 
-.board > [data-status="questionable"] {
+.questionableCell{
   background-color: rgb(238, 238, 32);
   color: black;
   cursor: pointer;

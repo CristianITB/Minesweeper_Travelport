@@ -40,7 +40,7 @@ async function displayShowValue(displayValue){
 }
 
 async function getCellStatus(cellCoord, expectedCelStatus){
-	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("data-status");
+	const cellStatus = await page.locator(`[data-testid="${cellCoord}"]`).getAttribute("class");
 	expect(cellStatus).toBe(expectedCelStatus)
 }
 
@@ -90,7 +90,7 @@ When('the user discovers the cell {string}', async (cellCoord) => {
 })
 
 Then('the cell {string} should show a mine', async (cellCoord) => {
-	await getCellStatus(cellCoord, "mine")
+	await getCellStatus(cellCoord, "minedCell")
 })
 
 Then('the board display should show the following value:', async (displayValue) => {
@@ -124,7 +124,7 @@ Given('the user loads the following mock data:', async (mockData) => {
 });
 
 Then('the cell {string} should be empty', async (cellCoord) => {
-	await getCellStatus(cellCoord, "empty")
+	await getCellStatus(cellCoord, "emptyCell")
 })
 
 When('the user tags the cell {string} as suspected', async (cellCoord) => {
@@ -133,7 +133,7 @@ When('the user tags the cell {string} as suspected', async (cellCoord) => {
 
 Then('the cell {string} should show the suspected tag', async (cellCoord) => {
 	await getCellTextContent(cellCoord, "!")
-	await getCellStatus(cellCoord, "suspected")
+	await getCellStatus(cellCoord, "suspectedCell")
 })
 
 When('the user untags the suspected cell {string}', async (cellCoord) => {
@@ -142,7 +142,7 @@ When('the user untags the suspected cell {string}', async (cellCoord) => {
 
 Then("the cell {string} shouldn't show the suspected tag", async (cellCoord) => {
 	await getCellTextContent(cellCoord, "")
-	await getCellStatus(cellCoord, "hidden")
+	await getCellStatus(cellCoord, "hiddenCell")
 })
 
 Then('the untagged mines counter should be set at: {string}', async (untaggedMinesCounter) => {
@@ -163,7 +163,7 @@ When('the user tags the cell {string} as questionable', async(cellCoord) => {
 
 Then('the cell {string} should show the questionable tag', async (cellCoord) => {
 	await getCellTextContent(cellCoord, "?")
-	await getCellStatus(cellCoord, "questionable")
+	await getCellStatus(cellCoord, "questionableCell")
 })
 
 When('the user untags the questionable cell {string}', async (cellCoord) => {
@@ -172,7 +172,7 @@ When('the user untags the questionable cell {string}', async (cellCoord) => {
 
 Then("the cell {string} shouldn't show the questionable tag", async (cellCoord) => {
 	await getCellTextContent(cellCoord, "")
-	await getCellStatus(cellCoord, "hidden")
+	await getCellStatus(cellCoord, "hiddenCell")
 })
 
 Given('the untagged mines counter is {string}', async(counter) => {

@@ -21,13 +21,13 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
         const row = []
         for(let y = 0; y < numberOfColumns; y++){
             const element = document.createElement("div")
-            //element.dataset.status = Cell_Status.HIDDEN
+            element.classList.add("hiddenCell")
             
             let xCorrected = x+1
             let yCorrected = y+1
             element.setAttribute("data-testid", "(" + xCorrected + ", " + yCorrected + ")")
 
-            //let status = element.dataset.status
+            let numberOfAdjacentMines
 
             const cell = {
                 status: Cell_Status.HIDDEN,
@@ -35,16 +35,7 @@ export function createBoard(numberOfRows, numberOfColumns, numberOfMines, minePo
                 x,
                 y,
                 mine: minePositions.some(positionMatch.bind(null, {x, y})),  //checks if the positoins in "minePositions" matches de x, y coord above. If they match, mine = true
-                
-                /*
-                get status(){
-                    return this.element.dataset.status
-                },
-                set status(value){
-                    this.element.dataset.status = value
-                }
-                */
-                
+                numberOfAdjacentMines                
             }
             row.push(cell)
         }
@@ -82,52 +73,38 @@ function getRandomNumber(size){
 }
 
 export function tagCell(cell){
-    console.log(cell.x + " la x, " + "la y " + cell.y)
     if(cell.status === Cell_Status.HIDDEN){
         cell.status = Cell_Status.SUSPECTED
-        cell.element.textContent = "!"
+
     } else if(cell.status === Cell_Status.SUSPECTED){
         cell.status = Cell_Status.QUESTIONABLE
-        cell.element.textContent = "?"
+
     } else if(cell.status === Cell_Status.QUESTIONABLE){
         cell.status = Cell_Status.HIDDEN
-        cell.element.textContent = ""
     } else{
         return
     }
 }
 
 export function discoverCell(board, cell){
-    /*
-    console.log(cell)
-    console.log(cell.status)
-    cell.status = Cell_Status.SUSPECTED
-    console.log(cell)
-    */
     if(cell.status !== Cell_Status.HIDDEN && cell.status !== Cell_Status.SUSPECTED && cell.status !== Cell_Status.QUESTIONABLE){
         return
     }
 
     if(cell.mine){
-        cell.element.textContent = ""
-        cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.MINE
         return
     }
 
-    cell.element.textContent = ""
     cell.status = Cell_Status.NUMBER
     const adjacentCells = getAdjacentCells(board, cell)
     const mines = adjacentCells.filter(adjacentCell => adjacentCell.mine)
 
     if(mines.length === 0){
-        cell.element.setAttribute("disabled", true)
         cell.status = Cell_Status.EMPTY
         adjacentCells.forEach(discoverCell.bind(null, board))  //aqui ocurre la magia de destapar las empty
     } else{
-        cell.element.setAttribute("disabled", true)
-        cell.element.textContent = mines.length;
-        cell.element.classList.add("mines"+ mines.length)
+        cell.numberOfAdjacentMines = mines.length
     }
 }
 
@@ -168,9 +145,7 @@ export function tagAllMines(board){
     board.forEach(row =>{
         row.forEach(cell =>{
             if(cell.mine){
-                cell.element.setAttribute("disabled", true)
                 cell.status = Cell_Status.SUSPECTED
-                cell.element.textContent = "!"
             }
         })
     })

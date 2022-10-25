@@ -62,21 +62,6 @@ var boardElement = document.querySelector(".board");
 var messageText = document.querySelector(".subtext");
 var untaggedMinesCounter = document.querySelector("[untagged-mines-counter]");
 
-//var count = boardElement.getElementsByTagName('div');
-//const count = boardElement.childNodes;
-//console.log(count)
-//console.log(count.length)
-//no aconsegueixo treure el nombre de child divs qe te el board, qe voldria saber-ho
-//per poder fer el test de default screen show a 8x8 board
-
-function countDivs(){
-    var manolo = document.querySelector(".board");
-    var count = manolo.getElementsByTagName('div');
-    //console.log(count)
-    //console.log(count.length)
-}
-//countDivs()
-
 //Setting up the board
 function setUpBoard(){
     board.forEach(row => {
@@ -86,18 +71,76 @@ function setUpBoard(){
                 startTimer();
                 discoverCell(board, cell);
                 checkEndGame();
+                updateHTML()
                 listMinesLeft();
             })
             cell.element.addEventListener("contextmenu", e =>{
                 startTimer();
                 e.preventDefault();
                 tagCell(cell);
+                updateHTML();
                 listMinesLeft();
             })
         })
     })
 }
 setUpBoard();
+
+function updateHTML(){
+    board.forEach(row => {
+        row.forEach(cell => {
+            if(cell.status === Cell_Status.MINE){
+                cell.element.classList.remove("hiddenCell")
+                cell.element.classList.remove("suspectedCell")
+                cell.element.classList.remove("questionableCell")
+
+                cell.element.textContent = "💣"
+                cell.element.setAttribute("disabled", true)
+                cell.element.classList.add("minedCell")
+                
+            } else if(cell.status === Cell_Status.NUMBER){
+                cell.element.classList.remove("hiddenCell")
+                cell.element.classList.remove("suspectedCell")
+                cell.element.classList.remove("questionableCell")
+
+                cell.element.textContent = cell.numberOfAdjacentMines;
+                cell.element.setAttribute("disabled", true)
+                cell.element.classList.add("numberedCell")
+                cell.element.classList.add("mines" + cell.numberOfAdjacentMines)
+
+            } else if(cell.status === Cell_Status.EMPTY){
+                cell.element.classList.remove("hiddenCell")
+                cell.element.classList.remove("suspectedCell")
+                cell.element.classList.remove("questionableCell")
+
+                cell.element.textContent = ""
+                cell.element.setAttribute("disabled", true)
+                cell.element.classList.add("emptyCell")
+
+            } else if(cell.status === Cell_Status.SUSPECTED){
+                cell.element.classList.remove("hiddenCell")
+
+                cell.element.textContent = "!"
+                cell.element.setAttribute("disabled", true)
+                cell.element.classList.add("suspectedCell")
+
+            } else if(cell.status === Cell_Status.QUESTIONABLE){
+                cell.element.classList.remove("hiddenCell")
+                cell.element.classList.remove("suspectedCell")
+
+                cell.element.textContent = "?"
+                cell.element.classList.add("questionableCell")
+
+            } else if(cell.status === Cell_Status.HIDDEN){
+                cell.element.classList.remove("suspectedCell")
+                cell.element.classList.remove("questionableCell")
+
+                cell.element.textContent = ""
+                cell.element.classList.add("hiddenCell")
+            }
+        })
+    })
+}
 
 boardElement.style.setProperty("--rowsSize", numberOfRows);
 boardElement.style.setProperty("--columnsSize", numberOfColumns);
@@ -129,7 +172,6 @@ function checkEndGame(){
         messageText.textContent = "You lost the game like you lose everything in life loser.";
         board.forEach(row => {
             row.forEach(cell => {
-                console.log(cell)
                 if (cell.mine && cell.status !== Cell_Status.SUSPECTED){
                     discoverCell(board, cell);
                 } else if(!cell.mine && cell.status === Cell_Status.SUSPECTED){
