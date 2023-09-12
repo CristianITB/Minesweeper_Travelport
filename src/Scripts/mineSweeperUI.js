@@ -28,7 +28,7 @@ if(mockData != null && checkMockData(mockData)){
 function checkMockData(mockData){
     let mockDataIsFine = true;
     for(let i = 0; i < mockData.length; i++){
-        if(mockData[i] != "x" && mockData[i] != "o" && mockData[i] != "-"){
+        if (!["x", "o", "-"].includes(mockData[i])) {
             mockDataIsFine = false;
             break;
         }
@@ -165,11 +165,11 @@ function checkEndGame(){
 
     if(win){
         tagAllMines(board);
-        messageText.textContent = "You've won the game! Congratulations motherfucker.";
+        messageText.textContent = "You've won the game! Congratulations!";
     }
 
     if(lose){
-        messageText.textContent = "You lost the game like you lose everything in life loser.";
+        messageText.textContent = "You lost the game! C'mon it was easy:(";
         board.forEach(row => {
             row.forEach(cell => {
                 if (cell.mine && cell.status !== Cell_Status.SUSPECTED){
